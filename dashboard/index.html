@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Vault | GitOps JEE Question Bank & Issue Resolver</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon"><i class="fa-solid fa-database"></i></span>
+                    <span class="logo-text">Q-VAULT</span>
+                </div>
+                <div class="repo-tag"><i class="fa-brands fa-git-alt"></i> JEE_QBANK</div>
+            </div>
+
+            <!-- Active Branch Selector -->
+            <div class="branch-selector-container">
+                <label class="section-label">Active Branch</label>
+                <div class="branch-selector" id="branchSelectorBtn">
+                    <span class="current-branch"><i class="fa-solid fa-code-branch"></i> <span id="activeBranchText">main</span></span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <!-- Dropdown list of branches -->
+                <div class="branch-dropdown" id="branchDropdown">
+                    <div class="branch-option active" data-branch="main">
+                        <i class="fa-solid fa-code-branch text-primary"></i>
+                        <div class="branch-info">
+                            <span class="branch-name">main</span>
+                            <span class="branch-desc">Verified production questions</span>
+                        </div>
+                    </div>
+                    <div class="branch-option" data-branch="year-2023">
+                        <i class="fa-solid fa-code-branch"></i>
+                        <div class="branch-info">
+                            <span class="branch-name">year-2023</span>
+                            <span class="branch-desc">2023 questions only</span>
+                        </div>
+                    </div>
+                    <div class="branch-option" data-branch="year-2024">
+                        <i class="fa-solid fa-code-branch"></i>
+                        <div class="branch-info">
+                            <span class="branch-name">year-2024</span>
+                            <span class="branch-desc">2023 & 2024 questions</span>
+                        </div>
+                    </div>
+                    <div class="branch-option" data-branch="year-2025">
+                        <i class="fa-solid fa-code-branch"></i>
+                        <div class="branch-info">
+                            <span class="branch-name">year-2025</span>
+                            <span class="branch-desc">All year questions</span>
+                        </div>
+                    </div>
+                    <div class="branch-option" data-branch="fix/rotational-friction-option">
+                        <i class="fa-solid fa-code-branch text-warning"></i>
+                        <div class="branch-info">
+                            <span class="branch-name">fix/rotational-friction-option</span>
+                            <span class="branch-desc">Unmerged fix for 2023 Mechanics Q1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="nav-menu">
+                <a href="#explorer" class="nav-item active" id="navExplorer">
+                    <i class="fa-solid fa-compass"></i>
+                    <span>Question Explorer</span>
+                </a>
+                <a href="#generator" class="nav-item" id="navGenerator">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Paper Generator</span>
+                </a>
+                <a href="#gitops" class="nav-item" id="navGitOps">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <span>GitOps & Issues</span>
+                    <span class="badge" id="issuesBadge">2</span>
+                </a>
+            </nav>
+
+            <!-- Bottom system info -->
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">Local Server Connected</span>
+                </div>
+                <div class="commit-hash" id="currentCommitHash">commit: 3fb63f8</div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="globalSearch" placeholder="Search questions, concepts, formulas...">
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="syncGitBtn"><i class="fa-solid fa-arrows-rotate"></i> Sync Git Status</button>
+                    <button class="btn btn-primary" id="openIssueBtn"><i class="fa-solid fa-circle-plus"></i> File New Issue</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- ================= QUESTION EXPLORER SECTION ================= -->
+                <section id="explorerSection" class="content-section active">
+                    <div class="section-header">
+                        <div>
+                            <h1>Question Explorer</h1>
+                            <p class="subtitle">Browse, inspect and verify questions from the active git branch repository structure.</p>
+                        </div>
+                        <div class="stats-cards">
+                            <div class="stats-card">
+                                <span class="stats-num" id="totalQuestionsCount">16</span>
+                                <span class="stats-label">Total Questions</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="filters-bar">
+                        <div class="filter-group">
+                            <label>Subject</label>
+                            <select id="filterSubject">
+                                <option value="all">All Subjects</option>
+                                <option value="Physics">Physics</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Mathematics">Mathematics</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Topic</label>
+                            <select id="filterTopic">
+                                <option value="all">All Topics</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Difficulty</label>
+                            <select id="filterDifficulty">
+                                <option value="all">All Difficulties</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Year</label>
+                            <select id="filterYear">
+                                <option value="all">All Years</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Explorer Layout: Grid of cards on left, detail view on right -->
+                    <div class="explorer-grid">
+                        <div class="questions-list-container">
+                            <div class="container-header">
+                                <span class="results-count" id="resultsCountText">Showing 16 questions</span>
+                                <div class="list-sort">
+                                    <span class="sort-label">Sort:</span>
+                                    <select id="sortQuestions">
+                                        <option value="id">ID</option>
+                                        <option value="difficulty">Difficulty</option>
+                                        <option value="year">Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="questions-list" id="questionsList">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Question Detail Panel -->
+                        <div class="question-detail-panel" id="questionDetailPanel">
+                            <div class="empty-detail-state" id="emptyDetailState">
+                                <div class="empty-icon"><i class="fa-solid fa-eye"></i></div>
+                                <h3>Select a Question</h3>
+                                <p>Click on any question card from the list to view its code, LaTeX formulas, answer key and git history.</p>
+                            </div>
+                            <div class="detail-content hidden" id="detailContent">
+                                <div class="detail-header">
+                                    <span class="q-id-badge" id="detailId">JEE-2023-PHY-MEC-001</span>
+                                    <div class="detail-meta-tags">
+                                        <span class="badge badge-difficulty" id="detailDifficulty">Hard</span>
+                                        <span class="badge badge-subject" id="detailSubject">Physics</span>
+                                        <span class="badge badge-year" id="detailYear">2023</span>
+                                    </div>
+                                </div>
+                                <div class="detail-subtopic">
+                                    <i class="fa-solid fa-folder-open"></i> <span id="detailTopicPath">physics / mechanics / rotational_dynamics</span>
+                                </div>
+
+                                <!-- LaTeX Question -->
+                                <div class="question-body-box">
+                                    <div class="box-label">Question Content</div>
+                                    <div class="question-text" id="detailQuestionText"></div>
+                                </div>
+
+                                <!-- Options -->
+                                <div class="options-grid" id="detailOptionsGrid">
+                                    <!-- A, B, C, D -->
+                                </div>
+
+                                <!-- Solution / Answer key (hidden by default) -->
+                                <div class="solution-box collapsed" id="solutionBox">
+                                    <button class="solution-toggle-btn" id="toggleSolutionBtn">
+                                        <span><i class="fa-solid fa-key"></i> Reveal Answer & Explanation</span>
+                                        <i class="fa-solid fa-chevron-down toggle-arrow"></i>
+                                    </button>
+                                    <div class="solution-content" id="solutionContent">
+                                        <div class="correct-answer-row">
+                                            Correct Answer: <strong class="ans-badge" id="detailCorrectAnswer">A</strong>
+                                        </div>
+                                        <div class="explanation-text" id="detailExplanation"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Git File Info -->
+                                <div class="git-info-box">
+                                    <div class="box-label"><i class="fa-brands fa-git-alt"></i> Git File Tracking</div>
+                                    <div class="git-path-display">
+                                        <span class="git-label">Path:</span>
+                                        <code id="detailFilePath">questions/2023/physics/mechanics/hard_JEE-2023-PHY-MEC-001.json</code>
+                                    </div>
+                                    <div class="git-history-action">
+                                        <button class="btn btn-xs btn-outline" id="reportQuestionIssueBtn"><i class="fa-solid fa-triangle-exclamation"></i> Raise Question Issue</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= PAPER GENERATOR SECTION ================= -->
+                <section id="generatorSection" class="content-section">
+                    <div class="section-header">
+                        <div>
+                            <h1>Question Paper Generator</h1>
+                            <p class="subtitle">Select parameters to automatically draft and compile exam papers from the active question bank.</p>
+                        </div>
+                    </div>
+
+                    <div class="generator-layout">
+                        <!-- Controls panel -->
+                        <div class="panel generator-config-panel">
+                            <h3>Paper Parameters</h3>
+                            <form id="paperConfigForm">
+                                <div class="form-group">
+                                    <label for="paperTitle">Paper Title</label>
+                                    <input type="text" id="paperTitle" value="JEE Advanced Mock Test" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Include Years</label>
+                                        <div class="checkbox-group">
+                                            <label><input type="checkbox" name="paperYears" value="2023" checked> 2023</label>
+                                            <label><input type="checkbox" name="paperYears" value="2024" checked> 2024</label>
+                                            <label><input type="checkbox" name="paperYears" value="2025" checked> 2025</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Questions per Subject</label>
+                                    <div class="subject-inputs">
+                                        <div class="subject-input-row">
+                                            <span class="sub-icon phy-color"><i class="fa-solid fa-atom"></i> Physics</span>
+                                            <input type="number" id="numPhysics" min="0" max="10" value="3">
+                                        </div>
+                                        <div class="subject-input-row">
+                                            <span class="sub-icon chm-color"><i class="fa-solid fa-flask"></i> Chemistry</span>
+                                            <input type="number" id="numChemistry" min="0" max="10" value="3">
+                                        </div>
+                                        <div class="subject-input-row">
+                                            <span class="sub-icon mth-color"><i class="fa-solid fa-calculator"></i> Mathematics</span>
+                                            <input type="number" id="numMaths" min="0" max="10" value="3">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Difficulty Mix</label>
+                                    <div class="difficulty-sliders">
+                                        <div class="slider-row">
+                                            <span>Easy</span>
+                                            <input type="range" id="pctEasy" min="0" max="100" value="30">
+                                            <span class="val" id="valEasy">30%</span>
+                                        </div>
+                                        <div class="slider-row">
+                                            <span>Medium</span>
+                                            <input type="range" id="pctMedium" min="0" max="100" value="40">
+                                            <span class="val" id="valMedium">40%</span>
+                                        </div>
+                                        <div class="slider-row">
+                                            <span>Hard</span>
+                                            <input type="range" id="pctHard" min="0" max="100" value="30">
+                                            <span class="val" id="valHard">30%</span>
+                                        </div>
+                                    </div>
+                                    <div class="slider-hint error-text hidden" id="difficultySumError">Percentages must sum to 100% (Current: <span id="currentSliderSum">100</span>%)</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block" id="generatePaperBtn"><i class="fa-solid fa-wand-magic-sparkles"></i> Compile Question Paper</button>
+                            </form>
+                        </div>
+
+                        <!-- Preview panel -->
+                        <div class="panel generator-preview-panel">
+                            <div class="preview-actions">
+                                <h3>Paper Preview</h3>
+                                <div class="preview-btns">
+                                    <button class="btn btn-sm btn-secondary" id="togglePreviewAnswers"><i class="fa-solid fa-eye-slash"></i> Toggle Answer Key</button>
+                                    <button class="btn btn-sm btn-primary" id="printPaperBtn"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+                                </div>
+                            </div>
+
+                            <div class="paper-preview-container" id="paperPreviewContainer">
+                                <div class="empty-paper-state" id="emptyPaperState">
+                                    <div class="empty-icon"><i class="fa-solid fa-file-lines"></i></div>
+                                    <h3>No Paper Generated</h3>
+                                    <p>Configure the parameters and click "Compile Question Paper" to draft a test paper.</p>
+                                </div>
+                                <div class="paper-sheet hidden" id="paperSheet">
+                                    <div class="paper-header">
+                                        <h2 id="previewPaperTitle">JEE Advanced Mock Test</h2>
+                                        <div class="paper-meta">
+                                            <span><strong>Time:</strong> 180 Minutes</span>
+                                            <span><strong>Max Marks:</strong> <span id="paperMaxMarks">36</span></span>
+                                            <span><strong>Active Branch:</strong> <span class="branch-tag" id="paperBranchTag">main</span></span>
+                                        </div>
+                                        <hr>
+                                        <div class="paper-instructions">
+                                            <strong>Instructions:</strong> This paper contains <span id="paperTotalQs">9</span> single-choice objective questions. Each question carries 4 marks for a correct response and -1 mark for an incorrect response.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="paper-questions-list" id="paperQuestionsList">
+                                        <!-- Dynamically generated questions -->
+                                    </div>
+
+                                    <div class="paper-answer-key hidden" id="paperAnswerKey">
+                                        <h3 class="answer-key-heading">ANSWER KEY & EXPLANATIONS</h3>
+                                        <div id="paperAnswerKeyList">
+                                            <!-- Dynamically generated answers -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= GITOPS & ISSUES BOARD SECTION ================= -->
+                <section id="gitopsSection" class="content-section">
+                    <div class="section-header">
+                        <div>
+                            <h1>GitOps & Issue Tracker</h1>
+                            <p class="subtitle">Manage error reports (Issues) and simulate pull requests to merge fixes into version branches.</p>
+                        </div>
+                    </div>
+
+                    <!-- Repository State Visualizer (Commit Graph) -->
+                    <div class="panel branch-graph-panel">
+                        <h3>Repository Branch Commit Graph</h3>
+                        <div class="git-graph-container">
+                            <div class="git-graph-diagram" id="gitGraphDiagram">
+                                <!-- Render a visual representation of the Git branches -->
+                                <div class="git-branch-line" id="branchLineMain">
+                                    <span class="branch-label">main</span>
+                                    <div class="commit-nodes">
+                                        <div class="commit-node" data-hash="3fb63f8" data-tooltip="chore: add scripts for question generation and repo setup"></div>
+                                        <div class="commit-node" data-hash="935ee93" data-tooltip="feat: seed 2023 questions for Physics, Chemistry, and Mathematics"></div>
+                                        <div class="commit-node" data-hash="2382520" data-tooltip="feat: seed 2024 questions for Physics, Chemistry, and Mathematics"></div>
+                                        <div class="commit-node" data-hash="bd8d34d" data-tooltip="feat: seed 2025 questions for Physics, Chemistry, and Mathematics"></div>
+                                        <div class="commit-node merge-node hidden" id="mergeNodeRotational" data-hash="mrg884a" data-tooltip="Merge pull request #101 from fix/rotational-friction-option"></div>
+                                    </div>
+                                </div>
+                                <div class="git-branch-line" id="branchLineYear2023">
+                                    <span class="branch-label">year-2023</span>
+                                    <div class="commit-nodes">
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-node" data-hash="935ee93" data-tooltip="feat: seed 2023 questions"></div>
+                                    </div>
+                                </div>
+                                <div class="git-branch-line" id="branchLineYear2024">
+                                    <span class="branch-label">year-2024</span>
+                                    <div class="commit-nodes">
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-node" data-hash="2382520" data-tooltip="feat: seed 2024 questions"></div>
+                                    </div>
+                                </div>
+                                <div class="git-branch-line" id="branchLineYear2025">
+                                    <span class="branch-label">year-2025</span>
+                                    <div class="commit-nodes">
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-node" data-hash="bd8d34d" data-tooltip="feat: seed 2025 questions"></div>
+                                    </div>
+                                </div>
+                                <div class="git-branch-line" id="branchLineFixRotational">
+                                    <span class="branch-label text-warning">fix/rotational...</span>
+                                    <div class="commit-nodes">
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-spacer"></div>
+                                        <div class="commit-node node-warning" data-hash="14f3ded" data-tooltip="fix: clarify rotational friction coefficient criteria for cylinder"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="git-commit-tooltip" id="gitCommitTooltip">Hover over a commit node to see info</div>
+                        </div>
+                    </div>
+
+                    <div class="gitops-split">
+                        <!-- Left: Issues List -->
+                        <div class="issues-list-panel">
+                            <div class="panel-header-row">
+                                <h3>Git Issues</h3>
+                                <div class="issue-filter-tabs">
+                                    <button class="tab-btn active" id="btnActiveIssues">Open (<span id="openIssuesCount">2</span>)</button>
+                                    <button class="tab-btn" id="btnClosedIssues">Closed (<span id="closedIssuesCount">1</span>)</button>
+                                </div>
+                            </div>
+                            <div class="issues-list" id="issuesList">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Right: PR Review / Issue Details -->
+                        <div class="issues-detail-panel" id="issueDetailPanel">
+                            <div class="empty-issue-state" id="emptyIssueState">
+                                <div class="empty-icon"><i class="fa-solid fa-circle-question"></i></div>
+                                <h3>Select an Issue</h3>
+                                <p>Click on any issue from the list to view report details, inspect the proposed file diff, and simulate a merge.</p>
+                            </div>
+                            
+                            <div class="issue-detailed-content hidden" id="issueDetailedContent">
+                                <div class="issue-details-header">
+                                    <div class="title-row">
+                                        <h2 id="issueDetailedTitle">Issue Title</h2>
+                                        <span class="issue-number" id="issueDetailedNum">#101</span>
+                                    </div>
+                                    <div class="issue-state-badge open" id="issueDetailedState">Open</div>
+                                </div>
+                                
+                                <div class="issue-meta-info">
+                                    <span><strong>Reported on Question:</strong> <a href="#" id="issueQuestionLink">JEE-2023-PHY-MEC-001</a></span>
+                                    <span><strong>Target Year:</strong> <span id="issueTargetYear">2023</span></span>
+                                    <span><strong>Proposed Fix Branch:</strong> <code id="issueFixBranch">fix/rotational-friction-option</code></span>
+                                </div>
+
+                                <div class="issue-body-box" id="issueDetailedDesc">
+                                    Issue description goes here...
+                                </div>
+
+                                <!-- Pull Request / Code Diff Visualizer -->
+                                <div class="pr-diff-box" id="prDiffBox">
+                                    <div class="diff-header">
+                                        <span><i class="fa-solid fa-code-compare"></i> Proposed Changes (File Diff)</span>
+                                        <code id="diffFileName">questions/2023/physics/mechanics/hard_JEE-2023-PHY-MEC-001.json</code>
+                                    </div>
+                                    <div class="diff-body" id="diffBody">
+                                        <!-- Diff lines -->
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="issue-actions" id="issueActions">
+                                    <button class="btn btn-success btn-block" id="mergePrBtn"><i class="fa-solid fa-code-merge"></i> Merge Pull Request & Resolve Issue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= REPORT ISSUE MODAL ================= -->
+    <div class="modal-backdrop" id="issueModalBackdrop">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-plus"></i> File Question Issue</h3>
+                <button class="modal-close-btn" id="closeIssueModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="newIssueForm">
+                <div class="form-group">
+                    <label for="issueTitleInput">Issue Title</label>
+                    <input type="text" id="issueTitleInput" placeholder="e.g. Incorrect sign in Electrostatics Q2 formula" required>
+                </div>
+                <div class="form-group">
+                    <label for="issueQuestionSelect">Associate with Question</label>
+                    <select id="issueQuestionSelect" required>
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="issueDescInput">Issue Description / Correction Detail</label>
+                    <textarea id="issueDescInput" rows="4" placeholder="Explain the error in the question, answer key, or explanation. Provide the correct LaTeX if possible." required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelIssueModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include Compiled Questions Database -->
+    <script src="data/questions_db.js"></script>
+    <!-- Custom Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
