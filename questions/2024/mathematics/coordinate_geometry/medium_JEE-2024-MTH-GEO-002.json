@@ -1,0 +1,18 @@
+{
+  "id": "JEE-2024-MTH-GEO-002",
+  "subject": "Mathematics",
+  "topic": "Coordinate Geometry",
+  "subtopic": "Parabola",
+  "difficulty": "Medium",
+  "year": 2024,
+  "question_text": "The equation of the tangent to the parabola $y^2 = 8x$ which is parallel to the line $2x - y + 5 = 0$ is:",
+  "options": {
+    "A": "$2x - y + 1 = 0$",
+    "B": "$2x - y + 2 = 0$",
+    "C": "$x - 2y + 1 = 0$",
+    "D": "$2x - y + 4 = 0$"
+  },
+  "correct_answer": "A",
+  "explanation": "For parabola $y^2 = 4ax$, $a = 2$. The slope of the line is $m = 2$. The equation of a tangent with slope $m$ is $y = mx + a/m$. Substituting values: $y = 2x + 2/2 \\implies y = 2x + 1 \\implies 2x - y + 1 = 0$.",
+  "marks": 4
+}
