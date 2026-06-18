@@ -1,0 +1,18 @@
+{
+  "id": "JEE-2023-PHY-ELC-002",
+  "subject": "Physics",
+  "topic": "Electrostatics",
+  "subtopic": "Electric Potential",
+  "difficulty": "Medium",
+  "year": 2023,
+  "question_text": "A point charge $q$ is placed at the center of a thin spherical conducting shell of radius $R$ that initially carries a charge $2q$. The electric potential at a distance $r = 2R$ from the center is:",
+  "options": {
+    "A": "$\\frac{3q}{8\\pi\\epsilon_0 R}$",
+    "B": "$\\frac{q}{4\\pi\\epsilon_0 R}$",
+    "C": "$\\frac{3q}{4\\pi\\epsilon_0 R}$",
+    "D": "$\\frac{q}{2\\pi\\epsilon_0 R}$"
+  },
+  "correct_answer": "A",
+  "explanation": "By Gauss's Law, the total charge enclosed by a sphere of radius $r = 2R$ is $q_{enc} = q + 2q = 3q$. The electric potential at $r \\ge R$ is $V = \\frac{q_{enc}}{4\\pi\\epsilon_0 r} = \\frac{3q}{4\\pi\\epsilon_0 (2R)} = \\frac{3q}{8\\pi\\epsilon_0 R}$.",
+  "marks": 4
+}

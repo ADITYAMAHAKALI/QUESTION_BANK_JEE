@@ -1,0 +1,18 @@
+{
+  "id": "JEE-2023-CHM-ORG-001",
+  "subject": "Chemistry",
+  "topic": "Organic Chemistry",
+  "subtopic": "Aromatic Compounds",
+  "difficulty": "Medium",
+  "year": 2023,
+  "question_text": "Identify the major product obtained when Benzene reacts with $\\text{CH}_3\\text{COCl}$ in the presence of anhydrous $\\text{AlCl}_3$ followed by reaction with $\\text{Zn-Hg}/\\text{HCl}$:",
+  "options": {
+    "A": "Ethylbenzene",
+    "B": "Acetophenone",
+    "C": "Toluene",
+    "D": "Benzaldehyde"
+  },
+  "correct_answer": "A",
+  "explanation": "Benzene reacts with $\\text{CH}_3\\text{COCl}$ in the presence of $\\text{AlCl}_3$ (Friedel-Crafts Acylation) to give Acetophenone. Subsequent reduction with Clemmensen reagent ($\\text{Zn-Hg}/\\text{HCl}$) reduces the carbonyl group to a methylene group, yielding Ethylbenzene.",
+  "marks": 4
+}
