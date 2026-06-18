@@ -1,0 +1,335 @@
+import os
+import json
+
+# Define the question corpus
+questions_db = [
+    # --- PHYSICS: 2023 ---
+    {
+        "id": "JEE-2023-PHY-MEC-001",
+        "subject": "Physics",
+        "topic": "Mechanics",
+        "subtopic": "Rotational Dynamics",
+        "difficulty": "Hard",
+        "year": 2023,
+        "question_text": "A solid cylinder of mass $M$ and radius $R$ is rolling without slipping down an inclined plane of angle $\\theta$. If the coefficient of static friction is $\\mu_s$, what is the minimum value of $\\mu_s$ required to prevent slipping?",
+        "options": {
+            "A": "$\\frac{1}{3} \\tan \\theta$",
+            "B": "$\\frac{2}{3} \\tan \\theta$",
+            "C": "$\\frac{1}{2} \\tan \\theta$",
+            "D": "$\\frac{2}{5} \\tan \\theta$"
+        },
+        "correct_answer": "A",
+        "explanation": "For rolling without slipping: $a = \\frac{g \\sin \\theta}{1 + I/(MR^2)}$. For a solid cylinder, $I = \\frac{1}{2} MR^2$, so $a = \\frac{2}{3} g \\sin \\theta$. The friction force is $f = M g \\sin \\theta - M a = \\frac{1}{3} M g \\sin \\theta$. Since $f \\le \\mu_s N = \\mu_s M g \\cos \\theta$, we have $\\mu_s \\ge \\frac{1}{3} \\tan \\theta$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2023-PHY-ELC-002",
+        "subject": "Physics",
+        "topic": "Electrostatics",
+        "subtopic": "Electric Potential",
+        "difficulty": "Medium",
+        "year": 2023,
+        "question_text": "A point charge $q$ is placed at the center of a thin spherical conducting shell of radius $R$ that initially carries a charge $2q$. The electric potential at a distance $r = 2R$ from the center is:",
+        "options": {
+            "A": "$\\frac{3q}{8\\pi\\epsilon_0 R}$",
+            "B": "$\\frac{q}{4\\pi\\epsilon_0 R}$",
+            "C": "$\\frac{3q}{4\\pi\\epsilon_0 R}$",
+            "D": "$\\frac{q}{2\\pi\\epsilon_0 R}$"
+        },
+        "correct_answer": "A",
+        "explanation": "By Gauss's Law, the total charge enclosed by a sphere of radius $r = 2R$ is $q_{enc} = q + 2q = 3q$. The electric potential at $r \\ge R$ is $V = \\frac{q_{enc}}{4\\pi\\epsilon_0 r} = \\frac{3q}{4\\pi\\epsilon_0 (2R)} = \\frac{3q}{8\\pi\\epsilon_0 R}$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2023-PHY-THM-003",
+        "subject": "Physics",
+        "topic": "Thermodynamics",
+        "subtopic": "Carnot Engine",
+        "difficulty": "Easy",
+        "year": 2023,
+        "question_text": "A Carnot engine operates between a hot reservoir at $500\\text{ K}$ and a cold reservoir at $300\\text{ K}$. What is the thermal efficiency of the engine?",
+        "options": {
+            "A": "$40\\%$",
+            "B": "$60\\%$",
+            "C": "$50\\%$",
+            "D": "$20\\%$"
+        },
+        "correct_answer": "A",
+        "explanation": "The efficiency $\\eta$ of a Carnot engine is given by $\\eta = 1 - \\frac{T_C}{T_H} = 1 - \\frac{300}{500} = 0.4$ or $40\\%$.",
+        "marks": 4
+    },
+
+    # --- PHYSICS: 2024 ---
+    {
+        "id": "JEE-2024-PHY-MEC-001",
+        "subject": "Physics",
+        "topic": "Mechanics",
+        "subtopic": "Gravitation",
+        "difficulty": "Medium",
+        "year": 2024,
+        "question_text": "The acceleration due to gravity at a height $h$ above the Earth's surface is same as that at a depth $d$ below the Earth's surface. If $h \\ll R$ (where $R$ is the radius of the Earth), then the relation between $h$ and $d$ is:",
+        "options": {
+            "A": "$d = 2h$",
+            "B": "$d = h$",
+            "C": "$d = \\frac{h}{2}$",
+            "D": "$d = 4h$"
+        },
+        "correct_answer": "A",
+        "explanation": "At height $h \\ll R$, $g_h \\approx g(1 - \\frac{2h}{R})$. At depth $d$, $g_d = g(1 - \\frac{d}{R})$. Equating the two gives $\\frac{2h}{R} = \\frac{d}{R} \\implies d = 2h$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2024-PHY-ELC-002",
+        "subject": "Physics",
+        "topic": "Electrostatics",
+        "subtopic": "Capacitance",
+        "difficulty": "Hard",
+        "year": 2024,
+        "question_text": "A parallel plate capacitor is filled with two slabs of dielectric constants $K_1$ and $K_2$ of equal thickness as shown. If the original capacitance was $C_0$, the new capacitance is:",
+        "options": {
+            "A": "$\\frac{2K_1 K_2}{K_1 + K_2} C_0$",
+            "B": "$\\frac{K_1 + K_2}{2} C_0$",
+            "C": "$(K_1 + K_2) C_0$",
+            "D": "$\\frac{K_1 K_2}{K_1 + K_2} C_0$"
+        },
+        "correct_answer": "A",
+        "explanation": "The two dielectrics divide the spacing into two equal halves of thickness $d/2$ in series. The capacitances are $C_1 = \\frac{K_1 \\epsilon_0 A}{d/2} = 2K_1 C_0$ and $C_2 = 2K_2 C_0$. The equivalent capacitance in series is $C_{eq} = \\frac{C_1 C_2}{C_1 + C_2} = \\frac{4 K_1 K_2 C_0^2}{2(K_1 + K_2) C_0} = \\frac{2 K_1 K_2}{K_1 + K_2} C_0$.",
+        "marks": 4
+    },
+
+    # --- PHYSICS: 2025 ---
+    {
+        "id": "JEE-2025-PHY-MEC-001",
+        "subject": "Physics",
+        "topic": "Mechanics",
+        "subtopic": "Projectile Motion",
+        "difficulty": "Easy",
+        "year": 2025,
+        "question_text": "A projectile is thrown with an initial velocity $\\vec{v} = 3\\hat{i} + 4\\hat{j}$ m/s. The horizontal range of the projectile is (take $g = 10\\text{ m/s}^2$):",
+        "options": {
+            "A": "$2.4\\text{ m}$",
+            "B": "$4.8\\text{ m}$",
+            "C": "$1.2\\text{ m}$",
+            "D": "$9.6\\text{ m}$"
+        },
+        "correct_answer": "A",
+        "explanation": "Here, $v_x = 3$ and $v_y = 4$. The time of flight is $T = \\frac{2v_y}{g} = \\frac{2 \\times 4}{10} = 0.8\\text{ s}$. The horizontal range is $R = v_x T = 3 \\times 0.8 = 2.4\\text{ m}$.",
+        "marks": 4
+    },
+
+    # --- CHEMISTRY: 2023 ---
+    {
+        "id": "JEE-2023-CHM-ORG-001",
+        "subject": "Chemistry",
+        "topic": "Organic Chemistry",
+        "subtopic": "Aromatic Compounds",
+        "difficulty": "Medium",
+        "year": 2023,
+        "question_text": "Identify the major product obtained when Benzene reacts with $\\text{CH}_3\\text{COCl}$ in the presence of anhydrous $\\text{AlCl}_3$ followed by reaction with $\\text{Zn-Hg}/\\text{HCl}$:",
+        "options": {
+            "A": "Ethylbenzene",
+            "B": "Acetophenone",
+            "C": "Toluene",
+            "D": "Benzaldehyde"
+        },
+        "correct_answer": "A",
+        "explanation": "Benzene reacts with $\\text{CH}_3\\text{COCl}$ in the presence of $\\text{AlCl}_3$ (Friedel-Crafts Acylation) to give Acetophenone. Subsequent reduction with Clemmensen reagent ($\\text{Zn-Hg}/\\text{HCl}$) reduces the carbonyl group to a methylene group, yielding Ethylbenzene.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2023-CHM-PHY-002",
+        "subject": "Chemistry",
+        "topic": "Physical Chemistry",
+        "subtopic": "Chemical Kinetics",
+        "difficulty": "Hard",
+        "year": 2023,
+        "question_text": "For a first-order reaction $A \\rightarrow B$, the rate constant is $k = 6.93 \\times 10^{-3} \\text{ s}^{-1}$. The time required for $90\\%$ completion of the reaction is approximately:",
+        "options": {
+            "A": "$332\\text{ s}$",
+            "B": "$100\\text{ s}$",
+            "C": "$230\\text{ s}$",
+            "D": "$460\\text{ s}$"
+        },
+        "correct_answer": "A",
+        "explanation": "For first-order kinetics: $t = \\frac{2.303}{k} \\log\\left(\\frac{[A]_0}{[A]_t}\\right)$. For $90\\%$ completion, $[A]_t = 0.1[A]_0$. Thus, $t = \\frac{2.303}{6.93 \\times 10^{-3}} \\log(10) = \\frac{2.303}{6.93 \\times 10^{-3}} \\approx 332.3\\text{ s}$.",
+        "marks": 4
+    },
+
+    # --- CHEMISTRY: 2024 ---
+    {
+        "id": "JEE-2024-CHM-INO-001",
+        "subject": "Chemistry",
+        "topic": "Inorganic Chemistry",
+        "subtopic": "Coordination Compounds",
+        "difficulty": "Medium",
+        "year": 2024,
+        "question_text": "The spin-only magnetic moment of $[\\text{Fe}(\\text{H}_2\\text{O})_6]^{2+}$ is approximately:",
+        "options": {
+            "A": "$4.90\\text{ BM}$",
+            "B": "$5.92\\text{ BM}$",
+            "C": "$2.83\\text{ BM}$",
+            "D": "$0\\text{ BM}$"
+        },
+        "correct_answer": "A",
+        "explanation": "In $[\\text{Fe}(\\text{H}_2\\text{O})_6]^{2+}$, Fe is in $+2$ oxidation state ($d^6$). Since $\\text{H}_2\\text{O}$ is a weak field ligand, no pairing occurs. Number of unpaired electrons $n = 4$. Spin-only magnetic moment $\\mu = \\sqrt{n(n+2)} = \\sqrt{4(6)} = \\sqrt{24} \\approx 4.90\\text{ BM}$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2024-CHM-ORG-002",
+        "subject": "Chemistry",
+        "topic": "Organic Chemistry",
+        "subtopic": "Haloalkanes",
+        "difficulty": "Easy",
+        "year": 2024,
+        "question_text": "Which of the following compounds undergoes nucleophilic substitution ($S_N1$) fastest?",
+        "options": {
+            "A": "tert-Butyl chloride",
+            "B": "Isopropyl chloride",
+            "C": "Ethyl chloride",
+            "D": "Methyl chloride"
+        },
+        "correct_answer": "A",
+        "explanation": "$S_N1$ reactions proceed via a carbocation intermediate. tert-Butyl chloride forms a stable $3^\\circ$ carbocation, which is highly stabilized by hyperconjugation and inductive effect, making it react the fastest.",
+        "marks": 4
+    },
+
+    # --- CHEMISTRY: 2025 ---
+    {
+        "id": "JEE-2025-CHM-PHY-001",
+        "subject": "Chemistry",
+        "topic": "Physical Chemistry",
+        "subtopic": "Electrochemistry",
+        "difficulty": "Hard",
+        "year": 2025,
+        "question_text": "The standard electrode potentials for $\\text{Cu}^{2+}/\\text{Cu}^+$ and $\\text{Cu}^+/\\text{Cu}$ are $0.15\\text{ V}$ and $0.50\\text{ V}$ respectively. The value of $E^\\circ$ for $\\text{Cu}^{2+}/\\text{Cu}$ is:",
+        "options": {
+            "A": "$0.325\\text{ V}$",
+            "B": "$0.65\\text{ V}$",
+            "C": "$0.35\\text{ V}$",
+            "D": "$0.175\\text{ V}$"
+        },
+        "correct_answer": "A",
+        "explanation": "Using Gibbs free energy relations: $\\Delta G^\circ = \\Delta G_1^\circ + \\Delta G_2^\circ \\implies -n F E^\circ = -n_1 F E_1^\circ - n_2 F E_2^\circ$. Here $n = 2$, $n_1 = 1$, $n_2 = 1$. Thus, $2 E^\circ = 1(0.15) + 1(0.50) = 0.65 \\implies E^\circ = 0.325\\text{ V}$.",
+        "marks": 4
+    },
+
+    # --- MATHEMATICS: 2023 ---
+    {
+        "id": "JEE-2023-MTH-CAL-001",
+        "subject": "Mathematics",
+        "topic": "Calculus",
+        "subtopic": "Limits",
+        "difficulty": "Medium",
+        "year": 2023,
+        "question_text": "Evaluate the limit: $\\lim_{x \\to 0} \\frac{e^{x^2} - \\cos x}{x^2}$",
+        "options": {
+            "A": "$\\frac{3}{2}$",
+            "B": "$1$",
+            "C": "$\\frac{1}{2}$",
+            "D": "$2$"
+        },
+        "correct_answer": "A",
+        "explanation": "Using L'Hopital's rule or series expansion: $e^{x^2} = 1 + x^2 + \\frac{x^4}{2} + \\dots$ and $\\cos x = 1 - \\frac{x^2}{2} + \\frac{x^4}{24} - \\dots$. The numerator becomes $(1 + x^2) - (1 - \\frac{x^2}{2}) + O(x^4) = \\frac{3}{2}x^2 + O(x^4)$. Dividing by $x^2$ and taking limit $x \\to 0$ yields $\\frac{3}{2}$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2023-MTH-ALG-002",
+        "subject": "Mathematics",
+        "topic": "Algebra",
+        "subtopic": "Matrices",
+        "difficulty": "Hard",
+        "year": 2023,
+        "question_text": "If $A$ is a $3 \\times 3$ non-singular matrix such that $A A^T = A^T A$ and $B = A^{-1} A^T$, then $B B^T$ is equal to:",
+        "options": {
+            "A": "$I$ (Identity Matrix)",
+            "B": "$A$",
+            "C": "$B$",
+            "D": "$A^{-1}$"
+        },
+        "correct_answer": "A",
+        "explanation": "$B B^T = (A^{-1} A^T) (A^{-1} A^T)^T = A^{-1} A^T A (A^{-1})^T = A^{-1} A A^T (A^T)^{-1} = I \\cdot I = I$. (Using the property that $(A^T)^{-1} = (A^{-1})^T$ and $A^T A = A A^T$).",
+        "marks": 4
+    },
+
+    # --- MATHEMATICS: 2024 ---
+    {
+        "id": "JEE-2024-MTH-CAL-001",
+        "subject": "Mathematics",
+        "topic": "Calculus",
+        "subtopic": "Definite Integration",
+        "difficulty": "Hard",
+        "year": 2024,
+        "question_text": "The value of the integral $\\int_0^{\\pi/2} \\frac{\\sin^{100} x}{\\sin^{100} x + \\cos^{100} x} dx$ is:",
+        "options": {
+            "A": "$\\frac{\\pi}{4}$",
+            "B": "$\\frac{\\pi}{2}$",
+            "C": "$\\pi$",
+            "D": "$0$"
+        },
+        "correct_answer": "A",
+        "explanation": "Let $I = \\int_0^{\\pi/2} \\frac{\\sin^{100} x}{\\sin^{100} x + \\cos^{100} x} dx$. Using property $\\int_a^b f(x) dx = \\int_a^b f(a+b-x) dx$: $I = \\int_0^{\\pi/2} \\frac{\\cos^{100} x}{\\cos^{100} x + \\sin^{100} x} dx$. Adding the two equations: $2I = \\int_0^{\\pi/2} 1 dx = \\frac{\\pi}{2} \\implies I = \\frac{\\pi}{4}$.",
+        "marks": 4
+    },
+    {
+        "id": "JEE-2024-MTH-GEO-002",
+        "subject": "Mathematics",
+        "topic": "Coordinate Geometry",
+        "subtopic": "Parabola",
+        "difficulty": "Medium",
+        "year": 2024,
+        "question_text": "The equation of the tangent to the parabola $y^2 = 8x$ which is parallel to the line $2x - y + 5 = 0$ is:",
+        "options": {
+            "A": "$2x - y + 1 = 0$",
+            "B": "$2x - y + 2 = 0$",
+            "C": "$x - 2y + 1 = 0$",
+            "D": "$2x - y + 4 = 0$"
+        },
+        "correct_answer": "A",
+        "explanation": "For parabola $y^2 = 4ax$, $a = 2$. The slope of the line is $m = 2$. The equation of a tangent with slope $m$ is $y = mx + a/m$. Substituting values: $y = 2x + 2/2 \\implies y = 2x + 1 \\implies 2x - y + 1 = 0$.",
+        "marks": 4
+    },
+
+    # --- MATHEMATICS: 2025 ---
+    {
+        "id": "JEE-2025-MTH-ALG-001",
+        "subject": "Mathematics",
+        "topic": "Algebra",
+        "subtopic": "Complex Numbers",
+        "difficulty": "Easy",
+        "year": 2025,
+        "question_text": "If $\\omega$ is a complex cube root of unity, then the value of $(1 - \\omega + \\omega^2)^5 + (1 + \\omega - \\omega^2)^5$ is:",
+        "options": {
+            "A": "$-32$",
+            "B": "$32$",
+            "C": "$64$",
+            "D": "$-64$"
+        },
+        "correct_answer": "A",
+        "explanation": "We know $1 + \\omega + \\omega^2 = 0$. So $1 + \\omega^2 = -\\omega$ and $1 + \\omega = -\\omega^2$. Thus, $(1 - \\omega + \\omega^2)^5 = (-2\\omega)^5 = -32\\omega^2$ (since $\\omega^5 = \\omega^2$). Similarly, $(1 + \\omega - \\omega^2)^5 = (-2\\omega^2)^5 = -32\\omega^{10} = -32\\omega$. The sum is $-32(\\omega^2 + \\omega) = -32(-1) = 32$ ? Wait: $(-2\\omega)^5 = -32 \\omega^2$. $(-2\\omega^2)^5 = -32 \\omega^{10} = -32 \\omega$. Sum = $-32(\\omega + \\omega^2) = -32(-1) = 32$. Let's check: Yes! So Option B is 32. Let's make sure the option and correct answer are aligned. Correct answer should be B.",
+        "correct_answer": "B",
+        "marks": 4
+    }
+]
+
+# Set up raw folder structure and output files
+def generate_raw_structure():
+    base_dir = "questions"
+    os.makedirs(base_dir, exist_ok=True)
+    
+    # Store questions in JSON files segregated by year/subject/topic/difficulty_id.json
+    for q in questions_db:
+        year_dir = os.path.join(base_dir, str(q["year"]))
+        subject_dir = os.path.join(year_dir, q["subject"].lower())
+        topic_dir = os.path.join(subject_dir, q["topic"].lower().replace(" ", "_"))
+        os.makedirs(topic_dir, exist_ok=True)
+        
+        filename = f"{q['difficulty'].lower()}_{q['id']}.json"
+        filepath = os.path.join(topic_dir, filename)
+        
+        with open(filepath, "w") as f:
+            json.dump(q, f, indent=2)
+            
+    print(f"Generated {len(questions_db)} question JSON files.")
+
+if __name__ == "__main__":
+    generate_raw_structure()
