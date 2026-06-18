@@ -1,5 +1,4 @@
 import os
-import json
 
 # Define the question corpus
 questions_db = [
@@ -209,7 +208,7 @@ questions_db = [
             "D": "$0.175\\text{ V}$"
         },
         "correct_answer": "A",
-        "explanation": "Using Gibbs free energy relations: $\\Delta G^\circ = \\Delta G_1^\circ + \\Delta G_2^\circ \\implies -n F E^\circ = -n_1 F E_1^\circ - n_2 F E_2^\circ$. Here $n = 2$, $n_1 = 1$, $n_2 = 1$. Thus, $2 E^\circ = 1(0.15) + 1(0.50) = 0.65 \\implies E^\circ = 0.325\\text{ V}$.",
+        "explanation": "Using Gibbs free energy relations: $\\Delta G^\\circ = \\Delta G_1^\\circ + \\Delta G_2^\\circ \\implies -n F E^\\circ = -n_1 F E_1^\\circ - n_2 F E_2^\\circ$. Here $n = 2$, $n_1 = 1$, $n_2 = 1$. Thus, $2 E^\\circ = 1(0.15) + 1(0.50) = 0.65 \\implies E^\\circ = 0.325\\text{ V}$.",
         "marks": 4
     },
 
@@ -304,32 +303,56 @@ questions_db = [
             "C": "$64$",
             "D": "$-64$"
         },
-        "correct_answer": "A",
-        "explanation": "We know $1 + \\omega + \\omega^2 = 0$. So $1 + \\omega^2 = -\\omega$ and $1 + \\omega = -\\omega^2$. Thus, $(1 - \\omega + \\omega^2)^5 = (-2\\omega)^5 = -32\\omega^2$ (since $\\omega^5 = \\omega^2$). Similarly, $(1 + \\omega - \\omega^2)^5 = (-2\\omega^2)^5 = -32\\omega^{10} = -32\\omega$. The sum is $-32(\\omega^2 + \\omega) = -32(-1) = 32$ ? Wait: $(-2\\omega)^5 = -32 \\omega^2$. $(-2\\omega^2)^5 = -32 \\omega^{10} = -32 \\omega$. Sum = $-32(\\omega + \\omega^2) = -32(-1) = 32$. Let's check: Yes! So Option B is 32. Let's make sure the option and correct answer are aligned. Correct answer should be B.",
         "correct_answer": "B",
+        "explanation": "We know $1 + \\omega + \\omega^2 = 0$. So $1 + \\omega^2 = -\\omega$ and $1 + \\omega = -\\omega^2$. Thus, $(1 - \\omega + \\omega^2)^5 = (-2\\omega)^5 = -32\\omega^2$ (since $\\omega^5 = \\omega^2$). Similarly, $(1 + \\omega - \\omega^2)^5 = (-2\\omega^2)^5 = -32\\omega^{10} = -32\\omega$. The sum is $-32(\\omega^2 + \\omega) = -32(-1) = 32$.",
         "marks": 4
     }
 ]
 
-# Set up raw folder structure and output files
+def make_md_content(q):
+    options_str = ""
+    for k, v in q["options"].items():
+        options_str += f"- **{k}**: {v}\n"
+        
+    return f"""---
+id: {q['id']}
+subject: {q['subject']}
+topic: {q['topic']}
+subtopic: {q['subtopic']}
+difficulty: {q['difficulty']}
+year: {q['year']}
+correct_answer: {q['correct_answer']}
+marks: {q['marks']}
+---
+
+# Question
+{q['question_text']}
+
+# Options
+{options_str.strip()}
+
+# Explanation
+{q['explanation']}
+"""
+
 def generate_raw_structure():
     base_dir = "questions"
     os.makedirs(base_dir, exist_ok=True)
     
-    # Store questions in JSON files segregated by year/subject/topic/difficulty_id.json
+    # Store questions in Markdown files segregated by year/subject/topic/difficulty_id.md
     for q in questions_db:
         year_dir = os.path.join(base_dir, str(q["year"]))
         subject_dir = os.path.join(year_dir, q["subject"].lower())
         topic_dir = os.path.join(subject_dir, q["topic"].lower().replace(" ", "_"))
         os.makedirs(topic_dir, exist_ok=True)
         
-        filename = f"{q['difficulty'].lower()}_{q['id']}.json"
+        filename = f"{q['difficulty'].lower()}_{q['id']}.md"
         filepath = os.path.join(topic_dir, filename)
         
         with open(filepath, "w") as f:
-            json.dump(q, f, indent=2)
+            f.write(make_md_content(q))
             
-    print(f"Generated {len(questions_db)} question JSON files.")
+    print(f"Generated {len(questions_db)} question Markdown files.")
 
 if __name__ == "__main__":
     generate_raw_structure()
