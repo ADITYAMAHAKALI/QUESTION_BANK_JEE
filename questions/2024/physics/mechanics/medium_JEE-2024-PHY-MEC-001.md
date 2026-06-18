@@ -1,0 +1,22 @@
+---
+id: JEE-2024-PHY-MEC-001
+subject: Physics
+topic: Mechanics
+subtopic: Gravitation
+difficulty: Medium
+year: 2024
+correct_answer: A
+marks: 4
+---
+
+# Question
+The acceleration due to gravity at a height $h$ above the Earth's surface is same as that at a depth $d$ below the Earth's surface. If $h \ll R$ (where $R$ is the radius of the Earth), then the relation between $h$ and $d$ is:
+
+# Options
+- **A**: $d = 2h$
+- **B**: $d = h$
+- **C**: $d = \frac{h}{2}$
+- **D**: $d = 4h$
+
+# Explanation
+At height $h \ll R$, $g_h \approx g(1 - \frac{2h}{R})$. At depth $d$, $g_d = g(1 - \frac{d}{R})$. Equating the two gives $\frac{2h}{R} = \frac{d}{R} \implies d = 2h$.
