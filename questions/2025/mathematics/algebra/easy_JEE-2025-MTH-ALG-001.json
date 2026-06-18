@@ -1,0 +1,18 @@
+{
+  "id": "JEE-2025-MTH-ALG-001",
+  "subject": "Mathematics",
+  "topic": "Algebra",
+  "subtopic": "Complex Numbers",
+  "difficulty": "Easy",
+  "year": 2025,
+  "question_text": "If $\\omega$ is a complex cube root of unity, then the value of $(1 - \\omega + \\omega^2)^5 + (1 + \\omega - \\omega^2)^5$ is:",
+  "options": {
+    "A": "$-32$",
+    "B": "$32$",
+    "C": "$64$",
+    "D": "$-64$"
+  },
+  "correct_answer": "B",
+  "explanation": "We know $1 + \\omega + \\omega^2 = 0$. So $1 + \\omega^2 = -\\omega$ and $1 + \\omega = -\\omega^2$. Thus, $(1 - \\omega + \\omega^2)^5 = (-2\\omega)^5 = -32\\omega^2$ (since $\\omega^5 = \\omega^2$). Similarly, $(1 + \\omega - \\omega^2)^5 = (-2\\omega^2)^5 = -32\\omega^{10} = -32\\omega$. The sum is $-32(\\omega^2 + \\omega) = -32(-1) = 32$ ? Wait: $(-2\\omega)^5 = -32 \\omega^2$. $(-2\\omega^2)^5 = -32 \\omega^{10} = -32 \\omega$. Sum = $-32(\\omega + \\omega^2) = -32(-1) = 32$. Let's check: Yes! So Option B is 32. Let's make sure the option and correct answer are aligned. Correct answer should be B.",
+  "marks": 4
+}

@@ -1,0 +1,18 @@
+{
+  "id": "JEE-2025-PHY-MEC-001",
+  "subject": "Physics",
+  "topic": "Mechanics",
+  "subtopic": "Projectile Motion",
+  "difficulty": "Easy",
+  "year": 2025,
+  "question_text": "A projectile is thrown with an initial velocity $\\vec{v} = 3\\hat{i} + 4\\hat{j}$ m/s. The horizontal range of the projectile is (take $g = 10\\text{ m/s}^2$):",
+  "options": {
+    "A": "$2.4\\text{ m}$",
+    "B": "$4.8\\text{ m}$",
+    "C": "$1.2\\text{ m}$",
+    "D": "$9.6\\text{ m}$"
+  },
+  "correct_answer": "A",
+  "explanation": "Here, $v_x = 3$ and $v_y = 4$. The time of flight is $T = \\frac{2v_y}{g} = \\frac{2 \\times 4}{10} = 0.8\\text{ s}$. The horizontal range is $R = v_x T = 3 \\times 0.8 = 2.4\\text{ m}$.",
+  "marks": 4
+}
